@@ -3,6 +3,23 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
 
+def Polynomial_Features(x, p, intercept=False):
+    """
+    Take an array of x values, and the desired polynomial degree p.
+    Create a feature (design) matrix with first column x**1, second column with x**2, and so on. I.e. the i-th column containing x**(i+1).
+    Intercept=True will turn the first column into ones, meaning the i-th column will contain the value x**(j).
+    """
+    n = len(x)
+    if intercept  == True:
+        X = np.zeros((int(n), int(p + 1)))
+        for i in range(0, int(p+1)):
+            X[:, i] = x**i  # Create first column with only ones (since x**0 = 1), the intercept column
+    else:
+        X = np.zeros((int(n), int(p)))
+        for i in range(0, int(p)):
+            X[:, i] = x**(i+1)
+    
+    return X
 
 def OLS_parameters(X, y):
     """
@@ -26,25 +43,7 @@ def Ridge_parameters(X, y, ridge_lambda):
     # Element-wise multiplication with * 
     return np.linalg.pinv(X.T @ X + ridge_lambda*I) @ X.T @ y
 
-def polynomial_features(x, p, intercept=False):
-    """
-    Take an array of x values, and the desired polynomial degree p.
-    Create a feature (design) matrix with first column x**1, second column with x**2, and so on. I.e. the i-th column containing x**(i+1).
-    Intercept=True will turn the first column into ones, meaning the i-th column will contain the value x**(j).
-    """
-    n = len(x)
-    if intercept  == True:
-        X = np.zeros((int(n), int(p + 1)))
-        for i in range(0, int(p+1)):
-            X[:, i] = x**i  # Create first column with only ones (since x**0 = 1), the intercept column
-    else:
-        X = np.zeros((int(n), int(p)))
-        for i in range(0, int(p)):
-            X[:, i] = x**(i+1)
-    
-    return X
-
-def find_MSE_Ridge_predict_poly_ridgelambda(x_data, y_data, poly_degree, ridge_lambda):
+def Find_MSE_Ridge_predict_poly_ridgelambda(x_data, y_data, poly_degree, ridge_lambda):
     """
     Calculate the MSE
     """
@@ -52,7 +51,7 @@ def find_MSE_Ridge_predict_poly_ridgelambda(x_data, y_data, poly_degree, ridge_l
     y = y_data
     poly_degree = int(poly_degree)
     
-    X = polynomial_features(x, poly_degree)
+    X = Polynomial_Features(x, poly_degree)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     scaler = StandardScaler()
