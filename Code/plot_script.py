@@ -1,3 +1,5 @@
+# To make plots fit nicely with two column revtex4 latex report
+
 import matplotlib
 from matplotlib.ticker import MultipleLocator
 
@@ -10,12 +12,12 @@ plt.rc("legend", fontsize=6)
 plt.rc("font", family="serif", size=8)
 plt.figure(figsize=(86.78*MM_TO_INCH, 70*MM_TO_INCH))
 plt.ticklabel_format(axis = "y", style="sci")
-plt.gca().xaxis.set_major_locator(MultipleLocator(base=2, offset=-1))   # Set x axis
+plt.gca().xaxis.set_major_locator(MultipleLocator(base=2, offset=-1))   # Configure the markers on the x axis
 
 plt.plot(x, y, ".-", label="label")
-plt.legend()
 plt.xlabel("y")
 plt.ylabel("x")
+plt.legend().get_frame().set_alpha(1.0) # Add solid background (non see thru) to legend box
 plt.grid(True, which="both", linestyle="--", linewidth=0.25)
 #plt.savefig("name.pdf", bbox_inches="tight")
 plt.show()
