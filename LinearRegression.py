@@ -567,9 +567,3 @@ class _LinearRegression(object):
                 i += -1
                 break
         return theta, i, converged
-
-if __name__ == "__main__":     
-    model = _LinearRegression(_param_getter="TGETTERt")
-    print(model._param_getter)
-    print(model.model_type)
-    print(model._gradient_descent_func)
