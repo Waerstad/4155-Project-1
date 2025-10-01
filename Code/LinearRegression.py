@@ -23,7 +23,7 @@ class _LinearRegression(object):
         self._targets = targets.reshape(-1,1) #store targets as 2d-array
         self._num_features = np.shape(features)[1]
         self._num_points = len(targets)
-        self.model_params = self._param_getter(features, targets, **kwargs)
+        self.model_params = self._param_getter(features, targets, **kwargs)[0]
         return self.model_params
     
     def predict(self, features):

@@ -1,0 +1,107 @@
+from OLS import OLS
+from Ridge import Ridge
+from LASSO import LASSO
+from sklearn.preprocessing import StandardScaler
+from functions import Polynomial_Features
+import matplotlib.pyplot as plt
+import numpy as np
+
+gds = ["simple",
+        "momentum",
+        "adagrad",
+        "RMSProp",
+        "adam",
+        "simple_stochastic",
+        "momentum_stochastic",
+        "adagrad_stochastic",
+        "RMSProp_stochastic",
+        "adam_stochastic"]
+
+num_col = 1
+loc = (1.18, 1.048)
+
+n = 100
+x = np.linspace(-1,1,n)
+deg = 10
+coeffs = np.random.normal(0, 10, deg)
+y_true = np.ones(n)
+for i, c in enumerate(coeffs):
+    y_true += c*x**(i+1)
+y_max = np.max(np.abs(y_true))
+y_true = y_true / y_max
+coeffs = coeffs / y_max
+y = y_true + np.random.normal(0, 0.5, n)
+print(coeffs)
+X = Polynomial_Features(x, deg)
+
+scaler = StandardScaler()
+scaler.fit(X)
+X_tr = scaler.transform(X)
+y_mean = y.mean()
+
+fig, ax = plt.subplots(3,1)
+
+fig.set_figwidth(10)
+fig.set_figheight(10)
+
+ax[0].scatter(x,y)
+ax[1].scatter(x,y)
+ax[2].scatter(x,y)
+
+ax[0].plot(x,y_true, label = "True func", color = "red")
+ax[1].plot(x,y_true, label = "True func", color = "red")
+ax[2].plot(x,y_true, label = "True func", color = "red")
+
+for gd in gds:
+    ols = OLS(gd)
+    if not ols.fit(X_tr, y, learning_rate=0.01, max_iter = 10000)[2]:
+        print(gd + " failed to converge")
+    ax[0].plot(x, X_tr @ ols.model_params + y_mean, label = gd)
+
+# Shrink current axis's height by 10% on the bottom
+box = ax[0].get_position()
+ax[0].set_position([box.x0, box.y0,
+                 box.width * 0.8, box.height])
+
+# Put a legend below current axis
+#ax[0].legend(loc='upper center', bbox_to_anchor=loc,
+#          fancybox=True, shadow=True, ncol=num_col)
+
+for gd in gds:
+    ridge = Ridge(gd)
+    if not ridge.fit(X_tr, y, learning_rate=0.01, max_iter = 10000)[2]:
+        print(gd + " failed to converge")
+    ax[1].plot(x, X_tr @ ridge.model_params + y_mean, label = gd)
+
+# Shrink current axis's height by 10% on the bottom
+box = ax[1].get_position()
+ax[1].set_position([box.x0, box.y0,
+                 box.width * 0.8, box.height])
+
+# Put a legend below current axis
+ax[1].legend(loc='upper center', bbox_to_anchor=loc,
+          fancybox=True, shadow=False, ncol=num_col)
+
+for gd in gds:
+    lasso = LASSO(gd)
+    if not lasso.fit(X_tr, y, learning_rate=0.01, max_iter = 10000)[2]:
+        print(gd + " failed to converge")
+    ax[2].plot(x, X_tr @ lasso.model_params + y_mean, label = gd)
+
+# Shrink current axis's height by 10% on the bottom
+box = ax[2].get_position()
+ax[2].set_position([box.x0, box.y0,
+                 box.width*0.8, box.height])
+
+# Put a legend below current axis
+#ax[2].legend(loc='upper center', bbox_to_anchor=loc,
+#          fancybox=True, shadow=True, ncol=num_col)
+
+ax[0].set_title("OLS")
+ax[1].set_title("Ridge")
+ax[2].set_title("LASSO")
+
+plt.show()
+
+
+                        
