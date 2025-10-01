@@ -1,10 +1,11 @@
 import numpy as np
 from LinearRegression import _LinearRegression
 
-class OLS(_LinearRegression):
-    def __init__(self, gd_method = "analytic"):
+class Ridge(_LinearRegression):
+    def __init__(self, gd_method = "analytic", rlambda = 0.01,):
         self.gd_method = gd_method
-        _LinearRegression.__init__(self, model_type="OLS", gradient_descent_method = self.gd_method,
+        self.rlambda = rlambda
+        _LinearRegression.__init__(self, model_type="Ridge", gradient_descent_method = self.gd_method,
                                    _param_getter = self._param_getter)
     
     def _gradient_func(self, theta):
@@ -15,7 +16,7 @@ class OLS(_LinearRegression):
         """
         X = self._features
         y = self._targets
-        return (2.0/self._num_points)*(X.T @ X @ theta - X.T @ y)
+        return (2.0/self._num_points)*(X.T @ X @ theta - X.T @ y) + 2*self.rlambda*theta
     
     def _analytic(self):
         """
@@ -27,7 +28,8 @@ class OLS(_LinearRegression):
         X = self._features
         y = self._targets
         y.shape = (self._num_points, 1)
-        self.model_params = np.linalg.pinv(X.T @ X) @ X.T @ y
+        I = np.eye(self._num_features)
+        self.model_params = np.linalg.pinv(X.T @ X + self.rlambda*I) @ X.T @ y
         return self.model_params
 
     def _param_getter(self, features, targets, **kwargs):
