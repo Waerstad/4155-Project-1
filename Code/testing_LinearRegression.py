@@ -102,7 +102,6 @@ for gd in gds:
     ax[2].plot(x, X_tr @ lasso.model_params + y_mean, label = gd)
 
 # Shrink current axis's height by 10% on the sidefrom OLS import OLS
-from Ridge import Ridge
 box = ax[2].get_position()
 ax[2].set_position([box.x0, box.y0,
                  box.width*0.8, box.height])
