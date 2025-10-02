@@ -23,7 +23,7 @@ One then fits the data by using the `fit(features, targets, **kwargs)` method. I
 model = OLS("momentum")
 output = model.fit(X, y, momentum=0.01, max_iter = 1000)
 ```
-Here output is the triple `(model_params, number_of_iterations, converged)`. Here `converged` is a boolean variable that is `True` if the gradient descent method converged before the number of iterations equaled or exceeded `max_iter`. The model parameters `model_params` are also written to the attribute `model.model_params`.
+Here output is the triple `(model_params, number_of_iterations, converged)`. Here `converged` is a boolean variable that is `True` if the gradient descent method converged before the number of iterations equaled or exceeded `max_iter` and `False` otherwise. The model parameters `model_params` are also written to the attribute `model.model_params`.
 
 All gradient descent methods have a few standard parameters, all have standard values. These are:
 - `initial_theta = np.zeros((self._num_features, 1))`
@@ -31,7 +31,7 @@ All gradient descent methods have a few standard parameters, all have standard v
 - `precision = 1e-8`, How close the model parameters $\boldsymbol{\theta}$ has to be to $\pmb{0}$ before the algorithm is considered to have converged.
 - `max_iter = 10000`
 
-In addition, some gradient descent methods have their own model specific parameters. The allowed gradient descent methods are and their parameters and their standard values are: 
+In addition, some gradient descent methods have their own model specific parameters. The allowed gradient descent methods, their parameters and their standard values are: 
 
 - `"simple"`: uses simple gradient descent. Has no additional parameters.
 - `"momentum"`:
@@ -46,15 +46,13 @@ In addition, some gradient descent methods have their own model specific paramet
   - `second_moment = 0.999`
   - `num_stab_const = 1e-8`
 
-Each gradient descent method also has a stochastic version which uses mini-batches to compute the gradient. These are chosen by appending `"_stochastic"` to the end of their name. For example, to use stochastic momentum with mini batch size 25 we write
+Each gradient descent method also has a stochastic version which uses mini-batches to compute the gradient. These are chosen by appending `"_stochastic"` to the end of their name. All the stochastic versions have the additional parameter `mbatch_size = 20`, which sets the mini-batch size. For example, to use stochastic momentum with mini batch size 25 we write
 ```python
 model = OLS("momentum_stochastic")
 output = model.fit(X, y, momentum=0.01, mbatch_size=25)
 ```
-All the stochastic versions have the additional parameter
-`mbatch_size = 20`, which sets the mini-batch size.
 
-The classes have methods:
+The classes have the methods:
 ```python
 fit(features, targets, **kwargs)
 ```
