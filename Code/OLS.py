@@ -1,5 +1,5 @@
 import numpy as np
-from LinearRegression import _LinearRegression
+from _LinearRegression import _LinearRegression
 
 class OLS(_LinearRegression):
     def __init__(self, gd_method = "analytic"):

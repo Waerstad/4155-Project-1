@@ -1,10 +1,10 @@
 import numpy as np
-from LinearRegression import _LinearRegression
+from _LinearRegression import _LinearRegression
 
 class Ridge(_LinearRegression):
-    def __init__(self, gd_method = "analytic", rlambda = 0.01,):
+    def __init__(self, gd_method = "analytic", llambda = 0.01,):
         self.gd_method = gd_method
-        self.rlambda = rlambda
+        self.llambda = llambda
         _LinearRegression.__init__(self, model_type="Ridge", gradient_descent_method = self.gd_method,
                                    _param_getter = self._param_getter)
     
@@ -16,7 +16,7 @@ class Ridge(_LinearRegression):
         """
         X = self._features
         y = self._targets
-        return (2.0/self._num_points)*(X.T @ X @ theta - X.T @ y) + 2*self.rlambda*theta
+        return (2.0/self._num_points)*(X.T @ X @ theta - X.T @ y) + 2*self.llambda*theta
     
     def _analytic(self):
         """
@@ -29,7 +29,7 @@ class Ridge(_LinearRegression):
         y = self._targets
         y.shape = (self._num_points, 1)
         I = np.eye(self._num_features)
-        self.model_params = np.linalg.pinv(X.T @ X + self.rlambda*I) @ X.T @ y
+        self.model_params = np.linalg.pinv(X.T @ X + self.llambda*I) @ X.T @ y
         return self.model_params
 
     def _param_getter(self, features, targets, **kwargs):

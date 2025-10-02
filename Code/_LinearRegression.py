@@ -56,7 +56,7 @@ class _LinearRegression(object):
         All added gd methods need to be added here
         inorder to be callable by self.fit()
         """
-        self._gd_methods = {
+        _gd_methods = {
         "simple": self._simple_gradient_descent,
         "momentum": self._momentum,
         "adagrad": self._adagrad,
@@ -68,7 +68,7 @@ class _LinearRegression(object):
         "RMSProp_stochastic": self._rmsprop_stochastic,
         "adam_stochastic": self._adam_stochastic
         }
-        return self._gd_methods[gd_method]
+        return _gd_methods[gd_method]
     
     def _simple_gradient_descent(self, X, y, **kwargs):
         """
@@ -98,9 +98,8 @@ class _LinearRegression(object):
             theta -= learning_rate*grad
             grad = self._gradient_func(theta)
             i += 1
-            if i > max_iter:
+            if i >= max_iter:
                 converged = False
-                i += -1
                 break
         return theta, i, converged
 
@@ -145,9 +144,8 @@ class _LinearRegression(object):
             change = theta - theta_old
             grad = self._gradient_func(theta)
             i += 1
-            if i > max_iter:
+            if i >= max_iter:
                 converged = False
-                i += -1
                 break
         return theta, i, converged
 
@@ -191,9 +189,8 @@ class _LinearRegression(object):
             # update change for next round of momentum
             grad = self._gradient_func(theta)
             i += 1
-            if i > max_iter:
+            if i >= max_iter:
                 converged = False
-                i += -1
                 break
         return theta, i, converged
 
@@ -240,9 +237,8 @@ class _LinearRegression(object):
             # update change for next round of momentum
             grad = self._gradient_func(theta)
             i += 1
-            if i > max_iter:
+            if i >= max_iter:
                 converged = False
-                i += -1
                 break
         return theta, i, converged
 
@@ -261,7 +257,7 @@ class _LinearRegression(object):
 
         first_moment = 0.9
         second_moment = 0.999
-        num_stab_const = 0.01
+        num_stab_const = 1e-8
 
         Returns the computed theta, the number of iterations completed i, and the bool converged.
         """
@@ -296,9 +292,8 @@ class _LinearRegression(object):
             theta -= learning_rate * corrected_first / (np.sqrt(corrected_second) + num_stab_const)
             # update change for next round of momentum
             grad = self._gradient_func(theta)
-            if i > max_iter:
+            if i >= max_iter:
                 converged = False
-                i += -1
                 break
         return theta, i, converged
 
@@ -338,9 +333,8 @@ class _LinearRegression(object):
         while np.linalg.norm(grad) > precision:
             theta -= learning_rate*grad
             i += 1
-            if i > max_iter:
+            if i >= max_iter:
                 converged = False
-                i += -1
                 break
             self._features, ymb = mini_batch(X,y, mbatch_size)
             self._targets = ymb.reshape(-1,1)
@@ -394,9 +388,8 @@ class _LinearRegression(object):
             self._targets = ymb.reshape(-1,1)
             grad = self._gradient_func(theta)
             i += 1
-            if i > max_iter:
+            if i >= max_iter:
                 converged = False
-                i += -1
                 break
         return theta, i, converged
 
@@ -446,9 +439,8 @@ class _LinearRegression(object):
             self._targets = ymb.reshape(-1,1)
             grad = self._gradient_func(theta)
             i += 1
-            if i > max_iter:
+            if i >= max_iter:
                 converged = False
-                i += -1
                 break
         return theta, i, converged
 
@@ -501,9 +493,8 @@ class _LinearRegression(object):
             self._targets = ymb.reshape(-1,1)
             grad = self._gradient_func(theta)
             i += 1
-            if i > max_iter:
+            if i >= max_iter:
                 converged = False
-                i += -1
                 break
         return theta, i, converged
 
@@ -562,8 +553,7 @@ class _LinearRegression(object):
             self._features, ymb = mini_batch(X,y, mbatch_size)
             self._targets = ymb.reshape(-1,1)
             grad = self._gradient_func(theta)
-            if i > max_iter:
+            if i >= max_iter:
                 converged = False
-                i += -1
                 break
         return theta, i, converged
