@@ -72,7 +72,7 @@ class _LinearRegression(object):
     
     def _simple_gradient_descent(self, X, y, **kwargs):
         """
-        Find the model parameters theta for that minimizes the gradient of the model object (self._gradient_func())
+        Find the model parameters theta for that minimizes the gradient of the model object (self._gradient_func_precomp())
         for feature matrix X and target values y by using simple gradient descent. Runs until the gradient is less
         than the precision variable or the number of iterations equal max_iter.
 
@@ -93,10 +93,10 @@ class _LinearRegression(object):
         converged = True
         theta = theta.reshape(-1,1)
         i = 0
-        grad = self._gradient_func(theta)
+        grad = self._gradient_func_precomp(theta)
         while np.linalg.norm(grad) > precision:
             theta -= learning_rate*grad
-            grad = self._gradient_func(theta)
+            grad = self._gradient_func_precomp(theta)
             i += 1
             if i >= max_iter:
                 converged = False
@@ -105,7 +105,7 @@ class _LinearRegression(object):
 
     def _momentum(self, X, y, **kwargs):
         """
-        Find the model parameters theta for that minimizes the gradient of the model object (self._gradient_func())
+        Find the model parameters theta for that minimizes the gradient of the model object (self._gradient_func_precomp())
         for feature matrix X and target values y by using gradient descent with momentum. Runs until the gradient is less
         than the precision variable or the number of iterations equal max_iter.
 
@@ -135,14 +135,14 @@ class _LinearRegression(object):
         i = 0
         theta_old = theta
         change = theta
-        grad = self._gradient_func(theta)
+        grad = self._gradient_func_precomp(theta)
         while np.linalg.norm(grad) > precision:
             theta_old = theta
             # update theta
             theta -= learning_rate*grad + momentum * change
             # update change for next round of momentum
             change = theta - theta_old
-            grad = self._gradient_func(theta)
+            grad = self._gradient_func_precomp(theta)
             i += 1
             if i >= max_iter:
                 converged = False
@@ -151,7 +151,7 @@ class _LinearRegression(object):
 
     def _adagrad(self, X, y, **kwargs):
         """
-        Find the model parameters theta for that minimizes the gradient of the model object (self._gradient_func())
+        Find the model parameters theta for that minimizes the gradient of the model object (self._gradient_func_precomp())
         for feature matrix X and target values y by using AdaGrad. Runs until the gradient is less
         than the precision variable or the number of iterations equal max_iter.
 
@@ -181,13 +181,13 @@ class _LinearRegression(object):
         i = 0
         # accumulative sum of gradient element-wise squared
         grad_accum = np.zeros_like(theta)
-        grad = self._gradient_func(theta)
+        grad = self._gradient_func_precomp(theta)
         while np.linalg.norm(grad) > precision:
             # update theta
             grad_accum += np.square(grad)
             theta -= (learning_rate / ( num_stab_const + np.sqrt(grad_accum)) ) * grad
             # update change for next round of momentum
-            grad = self._gradient_func(theta)
+            grad = self._gradient_func_precomp(theta)
             i += 1
             if i >= max_iter:
                 converged = False
@@ -196,7 +196,7 @@ class _LinearRegression(object):
 
     def _rmsprop(self, X, y, **kwargs): 
         """
-        Find the model parameters theta for that minimizes the gradient of the model object (self._gradient_func())
+        Find the model parameters theta for that minimizes the gradient of the model object (self._gradient_func_precomp())
         for feature matrix X and target values y by using AdaGrad. Runs until the gradient is less
         than the precision variable or the number of iterations equal max_iter.
 
@@ -229,13 +229,13 @@ class _LinearRegression(object):
         i = 0
         # decaying average of gradient element-wise squared
         grad_accum = np.zeros_like(theta)
-        grad = self._gradient_func(theta)
+        grad = self._gradient_func_precomp(theta)
         while np.linalg.norm(grad) > precision:
             grad_accum = decay_rate * grad_accum + (1-decay_rate)*np.square(grad)
             # update theta
             theta -= (learning_rate / ( num_stab_const + np.sqrt(grad_accum)) ) * grad
             # update change for next round of momentum
-            grad = self._gradient_func(theta)
+            grad = self._gradient_func_precomp(theta)
             i += 1
             if i >= max_iter:
                 converged = False
@@ -244,7 +244,7 @@ class _LinearRegression(object):
 
     def _adam(self, X, y, **kwargs):
         """
-        Find the model parameters theta for that minimizes the gradient of the model object (self._gradient_func())
+        Find the model parameters theta for that minimizes the gradient of the model object (self._gradient_func_precomp())
         for feature matrix X and target values y by using Adam. Runs until the gradient is less
         than the precision variable or until the number of iterations equal max_iter.
 
@@ -282,7 +282,7 @@ class _LinearRegression(object):
         # decaying average of gradient element-wise squared
         first_moment = np.zeros_like(theta)
         second_moment = np.zeros_like(theta)
-        grad = self._gradient_func(theta)
+        grad = self._gradient_func_precomp(theta)
         while np.linalg.norm(grad) > precision:
             i += 1
             first_moment = decay1 * first_moment + (1-decay1)*grad
@@ -291,7 +291,7 @@ class _LinearRegression(object):
             corrected_second = second_moment / (1 - decay2**i)
             theta -= learning_rate * corrected_first / (np.sqrt(corrected_second) + num_stab_const)
             # update change for next round of momentum
-            grad = self._gradient_func(theta)
+            grad = self._gradient_func_precomp(theta)
             if i >= max_iter:
                 converged = False
                 break
@@ -327,18 +327,18 @@ class _LinearRegression(object):
         y = y.reshape(-1,1)
         theta = theta.reshape(-1,1)
         i = 0
-        self._features, ymb = mini_batch(X,y, mbatch_size)
-        self._targets = ymb.reshape(-1,1)
-        grad = self._gradient_func(theta)
+        Xmb, ymb = mini_batch(X,y, mbatch_size)
+        ymb = ymb.reshape(-1,1)
+        grad = self._gradient_func(Xmb, ymb, theta)
         while np.linalg.norm(grad) > precision:
             theta -= learning_rate*grad
             i += 1
             if i >= max_iter:
                 converged = False
                 break
-            self._features, ymb = mini_batch(X,y, mbatch_size)
-            self._targets = ymb.reshape(-1,1)
-            grad = self._gradient_func(theta)
+            Xmb, ymb = mini_batch(X,y, mbatch_size)
+            ymb = ymb.reshape(-1,1)
+            grad = self._gradient_func(Xmb, ymb, theta)
         return theta, i, converged
 
     def _momentum_stochastic(self, X, y, **kwargs):
@@ -375,18 +375,18 @@ class _LinearRegression(object):
         i = 0
         theta_old = theta
         change = theta
-        self._features, ymb = mini_batch(X,y, mbatch_size)
-        self._targets = ymb.reshape(-1,1)
-        grad = self._gradient_func(theta)
+        Xmb, ymb = mini_batch(X,y, mbatch_size)
+        ymb = ymb.reshape(-1,1)
+        grad = self._gradient_func(Xmb, ymb, theta)
         while np.linalg.norm(grad) > precision:
             theta_old = theta
             # update theta
             theta -= learning_rate*grad + momentum * change
             # update change for next round of momentum
             change = theta - theta_old
-            self._features, ymb = mini_batch(X,y, mbatch_size)
-            self._targets = ymb.reshape(-1,1)
-            grad = self._gradient_func(theta)
+            Xmb, ymb = mini_batch(X,y, mbatch_size)
+            ymb = ymb.reshape(-1,1)
+            grad = self._gradient_func(Xmb, ymb, theta)
             i += 1
             if i >= max_iter:
                 converged = False
@@ -427,17 +427,17 @@ class _LinearRegression(object):
         i = 0
         # accumulative sum of gradient element-wise squared
         grad_accum = np.zeros_like(theta)
-        self._features, ymb = mini_batch(X,y, mbatch_size)
-        self._targets = ymb.reshape(-1,1)
-        grad = self._gradient_func(theta)
+        Xmb, ymb = mini_batch(X,y, mbatch_size)
+        ymb= ymb.reshape(-1,1)
+        grad = self._gradient_func(Xmb, ymb, theta)
         while np.linalg.norm(grad) > precision:
             # update theta
             grad_accum += np.square(grad)
             theta -= (learning_rate / ( num_stab_const + np.sqrt(grad_accum)) ) * grad
             # update change for next round of momentum
-            self._features, ymb = mini_batch(X,y, mbatch_size)
-            self._targets = ymb.reshape(-1,1)
-            grad = self._gradient_func(theta)
+            Xmb, ymb = mini_batch(X,y, mbatch_size)
+            ymb = ymb.reshape(-1,1)
+            grad = self._gradient_func(Xmb, ymb, theta)
             i += 1
             if i >= max_iter:
                 converged = False
@@ -481,17 +481,17 @@ class _LinearRegression(object):
         i = 0
         # decaying average of gradient element-wise squared
         grad_accum = np.zeros_like(theta)
-        self._features, ymb = mini_batch(X,y, mbatch_size)
-        self._targets = ymb.reshape(-1,1)
-        grad = self._gradient_func(theta)
+        Xmb, ymb = mini_batch(X,y, mbatch_size)
+        ymb = ymb.reshape(-1,1)
+        grad = self._gradient_func(Xmb, ymb, theta)
         while np.linalg.norm(grad) > precision:
             grad_accum = decay_rate * grad_accum + (1-decay_rate)*np.square(grad)
             # update theta
             theta -= (learning_rate / ( num_stab_const + np.sqrt(grad_accum)) ) * grad
             # update change for next round of momentum
-            self._features, ymb = mini_batch(X,y, mbatch_size)
-            self._targets = ymb.reshape(-1,1)
-            grad = self._gradient_func(theta)
+            Xmb, ymb = mini_batch(X,y, mbatch_size)
+            ymb = ymb.reshape(-1,1)
+            grad = self._gradient_func(Xmb, ymb, theta)
             i += 1
             if i >= max_iter:
                 converged = False
@@ -539,9 +539,9 @@ class _LinearRegression(object):
         # decaying average of gradient element-wise squared
         first_moment = np.zeros_like(theta)
         second_moment = np.zeros_like(theta)
-        self._features, ymb = mini_batch(X,y, mbatch_size)
-        self._targets = ymb.reshape(-1,1)
-        grad = self._gradient_func(theta)
+        Xmb, ymb = mini_batch(X,y, mbatch_size)
+        ymb = ymb.reshape(-1,1)
+        grad = self._gradient_func(Xmb, ymb, theta)
         while np.linalg.norm(grad) > precision:
             i += 1
             first_moment = decay1 * first_moment + (1-decay1)*grad
@@ -550,9 +550,9 @@ class _LinearRegression(object):
             corrected_second = second_moment / (1 - decay2**i)
             theta -= learning_rate * corrected_first / (np.sqrt(corrected_second) + num_stab_const)
             # update change for next round of momentum
-            self._features, ymb = mini_batch(X,y, mbatch_size)
-            self._targets = ymb.reshape(-1,1)
-            grad = self._gradient_func(theta)
+            Xmb, ymb = mini_batch(X,y, mbatch_size)
+            ymb = ymb.reshape(-1,1)
+            grad = self._gradient_func(Xmb, ymb, theta)
             if i >= max_iter:
                 converged = False
                 break

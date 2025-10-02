@@ -8,15 +8,22 @@ class Ridge(_LinearRegression):
         _LinearRegression.__init__(self, model_type="Ridge", gradient_descent_method = self.gd_method,
                                    _param_getter = self._param_getter)
     
-    def _gradient_func(self, theta):
+    def _gradient_func(self, X, y, theta):
         """
-        Computes the gradient at given theta for X and y given by
-        self._features and self_targets, which are set by method 
-        _LinearRegression.fit()
+        Computes the gradient of the cost function at theta for feature
+        matrix X and target vector y.
         """
-        X = self._features
-        y = self._targets
         return (2.0/self._num_points)*(X.T @ X @ theta - X.T @ y) + 2*self.llambda*theta
+
+    def _gradient_func_precomp(self, theta):
+        """
+        Computes the gradient of the cost function at theta for feature
+        matrix X and target vector y. When X and y do not change we can
+        use the precomputed the products X.T @ X and X.T @ y
+        """
+        XTX = self.XTX
+        XTy = self.XTy
+        return (2.0/self._num_points)*(XTX @ theta - XTy) + 2*self.llambda*theta
     
     def _analytic(self):
         """
@@ -40,6 +47,10 @@ class Ridge(_LinearRegression):
         if self.gradient_descent_method == "analytic":
             return self._analytic()
         else:
+            # precompute:
+            self.XTX = self._features.T @ self._features
+            self.XTy = self._features.T @ self._targets
+            # get the user-requested gradient descent function
             gd_func = self._get_gd_method(self.gradient_descent_method)
             return gd_func(features, targets, **kwargs)
             
