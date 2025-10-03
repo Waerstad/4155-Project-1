@@ -23,15 +23,16 @@ class _LinearRegression(object):
         self._targets = targets.reshape(-1,1) #store targets as 2d-array
         self._num_features = np.shape(features)[1]
         self._num_points = len(targets)
-        self.model_params = self._param_getter(features, targets, **kwargs)[0]
-        return self.model_params
+        params, its, converged = self._param_getter(features, targets, **kwargs)
+        self.model_params = params.T.flatten()
+        return self.model_params, its, converged
     
     def predict(self, features):
         """
         Calculate predicted y-values for a given feature matrix
         and previously calculated model parameters.
         """
-        return features @ self.model_params
+        return features @ self.model_params.T
     
     def error(self, features, targets):
         """

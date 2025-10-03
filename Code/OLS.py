@@ -34,7 +34,7 @@ class OLS(_LinearRegression):
         X = self._features
         y = self._targets
         y.shape = (self._num_points, 1)
-        self.model_params = np.linalg.pinv(X.T @ X) @ X.T @ y
+        self.model_params = (np.linalg.pinv(X.T @ X) @ X.T @ y)
         return self.model_params
 
     def _param_getter(self, features, targets, **kwargs):
@@ -43,7 +43,7 @@ class OLS(_LinearRegression):
         string self.gradient_descent_method.
         """
         if self.gradient_descent_method == "analytic":
-            return self._analytic()
+            return (self._analytic(), 1, True)
         else:
             # precompute products
             self.XTX = self._features.T @ self._features

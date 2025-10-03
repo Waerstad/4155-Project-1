@@ -45,7 +45,7 @@ class Ridge(_LinearRegression):
         string self.gradient_descent_method.
         """
         if self.gradient_descent_method == "analytic":
-            return self._analytic()
+            return (self._analytic(), 1, True)
         else:
             # precompute:
             self.XTX = self._features.T @ self._features
