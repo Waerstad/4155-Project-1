@@ -12,7 +12,7 @@ plt.rc("legend", fontsize=6)
 plt.rc("font", family="serif", size=8)
 plt.figure(figsize=(86.78*MM_TO_INCH, 70*MM_TO_INCH))
 plt.ticklabel_format(axis = "y", style="sci")
-plt.gca().xaxis.set_major_locator(MultipleLocator(base=2, offset=-1))   # Configure the markers on the x axis
+#plt.gca().xaxis.set_major_locator(MultipleLocator(base=2, offset=-1))   # Configure the markers on the x axis
 plt.grid(True, which="both", linestyle="--", linewidth=0.25)
 
 plt.plot(x, y, ".-", label="label")
