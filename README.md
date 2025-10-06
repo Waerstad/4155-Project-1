@@ -59,9 +59,9 @@ fit(features, targets, **kwargs)
 Updates and returns the attribute `model_params`. All `**kwargs` are passed to the gradient descent method.
 
 ```python
-predict(features)
+predict(features, intercept = 0)
 ```
-Returns the resulting predictions from predicting on `features` using model parameters stored in the attribute `model_params` (i.e. `fit()` must be run or `model_params` must be manually updated before predicting.)
+Returns the resulting predictions from predicting on `features` using model parameters stored in the attribute `model_params` (i.e. `fit()` must be run or `model_params` must be manually updated before predicting.) An intercept can be included using the input variable `intercept`.
 
 ### Implementation details
 
