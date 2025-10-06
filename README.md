@@ -52,7 +52,7 @@ model = OLS("momentum_stochastic")
 output = model.fit(X, y, momentum=0.01, mbatch_size=25)
 ```
 
-The classes have the methods:
+The classes have the user-facing methods:
 ```python
 fit(features, targets, **kwargs)
 ```
@@ -62,16 +62,6 @@ Updates and returns the attribute `model_params`. All `**kwargs` are passed to t
 predict(features)
 ```
 Returns the resulting predictions from predicting on `features` using model parameters stored in the attribute `model_params` (i.e. `fit()` must be run or `model_params` must be manually updated before predicting.)
-
-```python
-error(features, targets)
-```
-Returns the mean squared error of the output of `predict(features)` and `targets`.
-
-```python
-rsquared(features, targets)
-```
-Returns the $R^2$ value of the output of `predict(features)` with respect to `targets`.
 
 ### Implementation details
 
@@ -85,7 +75,7 @@ gradient_descent_method
 
 The attribute `model_type` is merely a string containing the model type, e.g. `"OLS"`. The model parameters are stored in the attribute `model_params` which is initialized as `None` and updated by the method `fit()`. Finally, the attribute `gradient_descent_method` stores the method used for gradient descent as a string, e.g. `"momentum"`. If instead one wants to use the analytical solution (if it exists) one can set `gradient_descent_method` equal to `"analytic"`.
 
-The `_LinearRegression` class also contains some user-facing methods, namely, `fit()`, `predict()`, `error()`. and `rsquared`. These are inherited by the model specific classes.
+The `_LinearRegression` class also contains some user-facing methods, namely, `fit()` and `predict()`. These are inherited by the model specific classes.
 
 All the three classes `OLS`, `Ridge` and `LASSO` are implemented in the same way. All three classes have the attribute `gd_method` which contains the name of the gradient descent method as a string and is passed onto the `_LinearRegression` attribute `_gradient_descent_method`. In addition, `Ridge` and `LASSO` have the attribute `llambda` which contains the lambda parameter.
 They all contain the two methods
