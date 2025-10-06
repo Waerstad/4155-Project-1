@@ -2,13 +2,14 @@
 ## Project 1 for FYS-STK 4155 at UiO.
 By John-Magnus Johnsen & Simen Lund Wærstad
 
-This project discusses the linear regression methods ordinary least squares (OLS), ridge, and LASSO. In addition, we discuss various gradient descent methods, including ordinary gradient descent, stochastic gradient descent, momuentum, ADAgrad, RMSprop, and ADAM. We also discuss the bias-variance trade-off as well as resampling methods.
+This project discusses the linear regression methods ordinary least squares (OLS), ridge, and LASSO. In addition, we discuss various gradient descent methods, including ordinary gradient descent, stochastic gradient descent, momuentum, ADAgrad, RMSprop, and Adam. We also discuss the bias-variance trade-off as well as resampling methods. This is all done in the context of a case study of polynomial fitting on the Runge function.
 
 The required python packages are included in the file `requirements.txt`. To install these packages run the command
 `pip install -r requirements.txt`
 
-All the code used to generate data and create figures is included in the folder `code/`. The python file `code/functions.py` is a collection of the linear regression models in the form of python functions. The runge function is included in `code/runge.py`
-The jupyter-notebook `generate_plots.ipynb` contains the code and data used to create the figures for exercise 2 of the week 39 exercises. Finally,  `project1_main.ipynb` contains the project description.
+All the code used to generate data and create figures is included in the folder `Code/`. The python file `Code/functions.py` is a collection of some utility functions like `Polynomial_Features`. The runge function is included in `Code/runge_function.py`. The linear regression models are implemented as classes. There's more details about this in the section below.
+
+The folder `Code/` also contains all jupyter-notebooks which were used to compute the data and plot all data used for tables and figures contained in the report. The jupyter-notebooks have file-names reflecting the data they compute. All instance of random functions have been seeded using NumPy's seeding functionality. 
 
 ### How to use the Classes `OLS`, `Ridge`, and `LASSO`.
 
