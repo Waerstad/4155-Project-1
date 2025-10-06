@@ -16,6 +16,7 @@ def set_plot_params(fig_width=1, fig_height=1):
 if __name__ == "__main__":
     filename = "num_its"
 
+    set_plot_params(1,1)
 
     x = np.round(np.linspace(2, 200, 20))
     Ns8 = np.array([1,208, 901, 1869, 3341, 5122, 7439, 9886, 12729, 16245, 19852, 24290, 28681, 33339, 38888, 44326, 50696, 57128, 64236, 70691])
