@@ -7,7 +7,7 @@ This project discusses the linear regression methods ordinary least squares (OLS
 The required python packages are included in the file `requirements.txt`. To install these packages run the command
 `pip install -r requirements.txt`
 
-All the code used to generate data and create figures is included in the folder `Code/`. The python file `Code/functions.py` is a collection of some utility functions like `Polynomial_Features`. The runge function is included in `Code/runge_function.py`. The linear regression models are implemented as classes. There's more details about this in the section below.
+All the code used to generate data and create figures is included in the folder `Code/`. The python file `Code/functions.py` is a collection of some utility functions like `Polynomial_Features`. The runge function is included in `Code/runge_function.py`. The mini-batch function used in stochastic gradient descent is included in `Code/mini_batch.py`. The linear regression models are implemented as classes. There's more details about this in the section below.
 
 The folder `Code/` also contains all jupyter-notebooks which were used to compute the data and plot all data used for tables and figures contained in the report. The jupyter-notebooks have file-names reflecting the data they compute. All instance of random functions have been seeded using NumPy's seeding functionality. 
 
